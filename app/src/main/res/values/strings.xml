@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Android Jetpack Room (Fluent SQLite database access) + Kotlin Coroutines Flow</string>
+    <string name="id">Id</string>
+    <string name="description">Descrição</string>
+    <string name="value">Valor</string>
+    <string name="save">Salvar</string>
+    <string name="list_of_products">Lista de Produtos</string>
+    <string name="product_detail">Detalhe do Produto</string>
+    <string name="error_description_required">A descrição e um campo obrigatório</string>
+    <string name="error_value_required">O valor é um campo obrigatório!</string>
+</resources>

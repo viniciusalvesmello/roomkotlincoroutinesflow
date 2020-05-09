@@ -1,0 +1,35 @@
+
+buildscript {
+    ext.kotlin_version = "1.3.72"
+    ext.nav_version = "2.3.0-alpha06"
+    repositories {
+        google()
+        jcenter()
+        
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.6.3'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+ext {
+    koin_version = "2.1.5"
+    room_version = "2.2.5"
+    canarinho_version = "2.0.1"
+    roboletric_version = "3.5.1"
+    junit_version = "4.12"
+}

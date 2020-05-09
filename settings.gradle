@@ -1,0 +1,2 @@
+rootProject.name='Android Jetpack Room (Fluent SQLite database access) + Kotlin Coroutines Flow'
+include ':app'
