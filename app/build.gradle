@@ -64,7 +64,9 @@ dependencies {
     implementation "br.com.concrete:canarinho:$canarinho_version"
 
     //Tests
+    testImplementation "android.arch.core:core-testing:$core_testing_version"
     testImplementation "androidx.room:room-testing:$room_version"
     testImplementation "org.robolectric:robolectric:$roboletric_version"
     testImplementation "junit:junit:$junit_version"
+    testImplementation "io.mockk:mockk:$mockk_version"
 }

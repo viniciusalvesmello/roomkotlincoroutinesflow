@@ -8,14 +8,14 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 interface GetProductRepository {
-    suspend fun getProduct(id: Int): Flow<Product>
+    fun getProduct(id: Int): Flow<Product>
 }
 
 class GetProductRepositoryImpl(
     private val productDao: ProductDao
 ) : GetProductRepository {
 
-    override suspend fun getProduct(id: Int): Flow<Product> = flow {
+    override fun getProduct(id: Int): Flow<Product> = flow {
         emit(productDao.selectProduct(id).toProduct())
     }
 }

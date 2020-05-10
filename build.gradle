@@ -30,6 +30,9 @@ ext {
     koin_version = "2.1.5"
     room_version = "2.2.5"
     canarinho_version = "2.0.1"
+
+    core_testing_version = "1.1.1"
     roboletric_version = "3.5.1"
     junit_version = "4.12"
+    mockk_version = "1.9.3"
 }

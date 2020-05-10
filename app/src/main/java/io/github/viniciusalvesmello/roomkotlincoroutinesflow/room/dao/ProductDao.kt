@@ -14,7 +14,7 @@ interface ProductDao {
     fun selectProducts(): Flow<List<ProductEntity>>
 
     @Query("select * from product where id = :id")
-    fun selectProduct(id: Int): ProductEntity
+    suspend fun selectProduct(id: Int): ProductEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(productEntity: ProductEntity): Long?

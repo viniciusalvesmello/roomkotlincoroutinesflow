@@ -11,6 +11,7 @@ import io.github.viniciusalvesmello.roomkotlincoroutinesflow.repository.GetProdu
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.repository.GetProductsRepository
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.repository.SaveProductRepository
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.repository.model.Product
+import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.AppDispatchers
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.ResourceResponse
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.StateView
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.extension.asMutable
@@ -26,7 +27,8 @@ import kotlinx.coroutines.launch
 class ProductsViewModel(
     private val getProductsRepository: GetProductsRepository,
     private val getProductRepository: GetProductRepository,
-    private val saveProductRepository: SaveProductRepository
+    private val saveProductRepository: SaveProductRepository,
+    private val appDispatchers: AppDispatchers
 ) : ViewModel() {
 
     private val getProducts: MutableLiveData<ResourceResponse<List<Product>>> = MutableLiveData()
@@ -56,7 +58,7 @@ class ProductsViewModel(
     fun getProduct(id: Int) {
         initProductLiveData()
         if (id > 0) {
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch(appDispatchers.dispatcherIO()) {
                 getProductRepository.getProduct(id)
                     .onStart {
                         getProductViewState.loadingProduct.asMutable.postValue(true)
@@ -73,11 +75,11 @@ class ProductsViewModel(
 
     fun saveProduct(product: Product) {
         loadingSaveProduct.asMutable.postValue(true)
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(appDispatchers.dispatcherIO()) {
             saveProductRepository.saveProduct(product = product, onSuccess = {
                 saveProduct.asMutable.postValue(true)
             }, onError = {
-                saveProduct.asMutable.postValue(true)
+                saveProduct.asMutable.postValue(false)
                 loadingSaveProduct.asMutable.postValue(false)
             })
         }

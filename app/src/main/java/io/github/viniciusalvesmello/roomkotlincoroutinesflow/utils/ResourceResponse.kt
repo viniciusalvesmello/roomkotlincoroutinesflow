@@ -7,4 +7,11 @@ class ResourceResponse<T>(
     val data: LiveData<T>,
     val error: LiveData<Throwable>,
     val retry: (() -> ResourceResponse<T>)? = null
-)
+) {
+    companion object {
+        fun <T> empty(): ResourceResponse<T> {
+            val (data, state, error) = buildResourceResponse<T>()
+            return ResourceResponse<T>(state, data, error)
+        }
+    }
+}

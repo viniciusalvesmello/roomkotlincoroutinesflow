@@ -12,6 +12,8 @@ import io.github.viniciusalvesmello.roomkotlincoroutinesflow.room.AppDatabase.Co
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.room.AppDatabase.Companion.START_DATABASE
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.AppCoroutines
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.AppCoroutinesImpl
+import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.AppDispatchers
+import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.AppDispatchersImpl
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.viewmodel.ProductsViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -19,6 +21,7 @@ import org.koin.dsl.module
 
 val coroutinesModule = module {
     single<AppCoroutines> { AppCoroutinesImpl() }
+    single<AppDispatchers> { AppDispatchersImpl() }
 }
 
 val databaseModule = module {
@@ -31,7 +34,7 @@ val databaseModule = module {
 }
 
 val productsModule = module {
-    viewModel { ProductsViewModel(get(), get(), get()) }
+    viewModel { ProductsViewModel(get(), get(), get(), get()) }
     single<GetProductsRepository> { GetProductsRepositoryImpl(get(), get()) }
     single<GetProductRepository> { GetProductRepositoryImpl(get()) }
     single<SaveProductRepository> { SaveProductRepositoryImpl(get()) }
