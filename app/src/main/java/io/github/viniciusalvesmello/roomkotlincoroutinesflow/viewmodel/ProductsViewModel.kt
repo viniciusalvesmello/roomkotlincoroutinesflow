@@ -18,6 +18,7 @@ import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.extension.asM
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.viewmodel.viewstate.GetProductViewState
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.viewmodel.viewstate.GetProductsViewState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -60,6 +61,7 @@ class ProductsViewModel(
         if (id > 0) {
             viewModelScope.launch(appDispatchers.dispatcherIO()) {
                 getProductRepository.getProduct(id)
+                    .buffer()
                     .onStart {
                         getProductViewState.loadingProduct.asMutable.postValue(true)
                     }.onEach {
