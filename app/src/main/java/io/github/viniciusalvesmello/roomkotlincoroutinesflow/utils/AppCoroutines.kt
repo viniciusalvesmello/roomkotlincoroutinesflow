@@ -21,7 +21,7 @@ class AppCoroutinesImpl : AppCoroutines {
     private val job: Job = SupervisorJob()
     private val scope: CoroutineScope = CoroutineScope(dispatcherMain() + job)
 
-    override fun scope(): CoroutineScope = CoroutineScope(dispatcherMain() + job)
+    override fun scope(): CoroutineScope = scope
 
     override fun dispatcherMain(): MainCoroutineDispatcher = Dispatchers.Main
 
@@ -39,7 +39,7 @@ class FakeAppCoroutinesImpl : AppCoroutines {
     private val job: Job = Job()
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined + job)
 
-    override fun scope(): CoroutineScope = CoroutineScope(Dispatchers.Unconfined + job)
+    override fun scope(): CoroutineScope = scope
 
     override fun dispatcherMain(): MainCoroutineDispatcher = Dispatchers.Main
 
