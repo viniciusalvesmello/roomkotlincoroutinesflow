@@ -14,7 +14,18 @@ class TestObserver<T>(target: LiveData<T>) {
     }
 
     fun assertValue(value: T) {
-        assert(value == values.last())
+        when(value) {
+            is Throwable -> {
+                assert(value.message == (values.last() as? Throwable)?.message)
+            }
+            else -> {
+                assert(value == values.last())
+            }
+        }
+    }
+
+    fun assertValueThrowable(value: Throwable) {
+        assert(value.message == (values.last() as? Throwable)?.message)
     }
 
     fun assertValue(value: T, numInvocations: Int = 1) {
