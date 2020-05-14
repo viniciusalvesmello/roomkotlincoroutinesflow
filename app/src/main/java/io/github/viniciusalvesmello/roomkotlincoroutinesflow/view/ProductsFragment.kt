@@ -20,11 +20,25 @@ class ProductsFragment : Fragment(R.layout.fragment_products) {
 
     private val productsViewModel by sharedViewModel<ProductsViewModel>()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private val products: MutableList<Product> = mutableListOf()
+    private val productsAdapter: ProductsAdapter = ProductsAdapter(products)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         productsViewModel.getProducts()
         initObservers()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        initView()
+    }
+
+    private fun initView() {
+        rvProducts.adapter = productsAdapter
+        rvProducts.layoutManager = LinearLayoutManager(context)
     }
 
     private fun initObservers() {
@@ -43,9 +57,10 @@ class ProductsFragment : Fragment(R.layout.fragment_products) {
         }
     }
 
-    private fun handleProducts(products: List<Product>) {
-        rvProducts.adapter = ProductsAdapter(products)
-        rvProducts.layoutManager = LinearLayoutManager(context)
+    private fun handleProducts(list: List<Product>) {
+        products.clear()
+        products.addAll(list)
+        productsAdapter.notifyDataSetChanged()
     }
 
     private fun handleGetProductsError() {
