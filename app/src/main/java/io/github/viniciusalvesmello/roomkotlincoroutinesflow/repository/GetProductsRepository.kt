@@ -1,13 +1,12 @@
 package io.github.viniciusalvesmello.roomkotlincoroutinesflow.repository
 
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.repository.mapper.toProduct
-import io.github.viniciusalvesmello.roomkotlincoroutinesflow.repository.mapper.toProductEntity
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.repository.model.Product
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.room.dao.ProductDao
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.AppCoroutines
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.ResourceResponse
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.extension.asCacheResourceResponse
-import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.extension.launchIO
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 interface GetProductsRepository {
@@ -21,9 +20,10 @@ class GetProductsRepositoryImpl(
 ) : GetProductsRepository {
 
     override fun getProducts(): ResourceResponse<List<Product>> =
-        productDao.selectProducts().map { list ->
-            list.map { it.toProduct() }
-        }.asCacheResourceResponse(appCoroutines)
+        productDao.selectProducts()
+            .flowOn(appCoroutines.dispatcherIO())
+            .map { list -> list.map { it.toProduct() } }
+            .asCacheResourceResponse(appCoroutines.scope())
 
     override fun cancel() {
         appCoroutines.cancel()

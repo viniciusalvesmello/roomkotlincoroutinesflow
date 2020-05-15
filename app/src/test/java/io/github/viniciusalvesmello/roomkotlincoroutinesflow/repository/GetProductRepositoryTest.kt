@@ -51,6 +51,6 @@ class GetProductRepositoryTest {
             error = t
         }
 
-        assertEquals(throwable, error)
+        assertEquals(throwable.message, error?.message)
     }
 }

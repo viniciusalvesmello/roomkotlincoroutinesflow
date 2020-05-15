@@ -3,7 +3,6 @@ package io.github.viniciusalvesmello.roomkotlincoroutinesflow.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations.map
-
 import androidx.lifecycle.Transformations.switchMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,7 +16,6 @@ import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.StateView
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.extension.asMutable
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.viewmodel.viewstate.GetProductViewState
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.viewmodel.viewstate.GetProductsViewState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -58,20 +56,23 @@ class ProductsViewModel(
 
     fun getProduct(id: Int) {
         initProductLiveData()
-        if (id > 0) {
-            viewModelScope.launch(appDispatchers.dispatcherIO()) {
-                getProductRepository.getProduct(id)
-                    .buffer()
-                    .onStart {
-                        getProductViewState.loadingProduct.asMutable.postValue(true)
-                    }.onEach {
-                        getProductViewState.loadingProduct.asMutable.postValue(false)
-                        getProductViewState.product.asMutable.postValue(it)
-                    }.catch {
-                        getProductViewState.loadingProduct.asMutable.postValue(false)
-                        getProductViewState.getProductError.asMutable.postValue(it)
-                    }.collect()
-            }
+
+        if (id == 0) {
+            return
+        }
+
+        viewModelScope.launch(appDispatchers.dispatcherIO()) {
+            getProductRepository.getProduct(id)
+                .buffer()
+                .onStart {
+                    getProductViewState.loadingProduct.asMutable.postValue(true)
+                }.onEach {
+                    getProductViewState.loadingProduct.asMutable.postValue(false)
+                    getProductViewState.product.asMutable.postValue(it)
+                }.catch {
+                    getProductViewState.loadingProduct.asMutable.postValue(false)
+                    getProductViewState.getProductError.asMutable.postValue(it)
+                }.collect()
         }
     }
 

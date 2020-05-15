@@ -5,7 +5,6 @@ import io.github.viniciusalvesmello.roomkotlincoroutinesflow.repository.model.Pr
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.room.dao.ProductDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 
 interface GetProductRepository {
     fun getProduct(id: Int): Flow<Product>
