@@ -9,9 +9,7 @@ import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.FakeAppCorout
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.extension.launchIO
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
-import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -21,24 +19,12 @@ import java.util.concurrent.CountDownLatch
 @RunWith(RobolectricTestRunner::class)
 class ProductDaoTest {
 
-    private lateinit var appDatabase: AppDatabase
-    private lateinit var productDao: ProductDao
-    private lateinit var appCoroutines: AppCoroutines
-
-    @Before
-    fun executeBefore() {
-        appDatabase = Room.inMemoryDatabaseBuilder(
-            RuntimeEnvironment.application.baseContext,
-            AppDatabase::class.java
-        ).build()
-        productDao = appDatabase.productDao()
-        appCoroutines = FakeAppCoroutinesImpl()
-    }
-
-    @After
-    fun executeAfter() {
-        appDatabase.close()
-    }
+    private val appDatabase: AppDatabase = Room.inMemoryDatabaseBuilder(
+        RuntimeEnvironment.application.baseContext,
+        AppDatabase::class.java
+    ).build()
+    private val productDao: ProductDao = appDatabase.productDao()
+    private val appCoroutines: AppCoroutines = FakeAppCoroutinesImpl()
 
     @Test
     fun `insert products should select all products`() {
