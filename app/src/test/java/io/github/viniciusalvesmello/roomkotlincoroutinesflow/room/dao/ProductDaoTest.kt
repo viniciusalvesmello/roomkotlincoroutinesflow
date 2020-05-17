@@ -6,8 +6,10 @@ import io.github.viniciusalvesmello.roomkotlincoroutinesflow.room.entity.Product
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.room.factory.ProductEntityFactory.Factory.makeProductEntity
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.AppCoroutines
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.FakeAppCoroutinesImpl
-import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.extension.launchIO
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -27,7 +29,7 @@ class ProductDaoTest {
     private val appCoroutines: AppCoroutines = FakeAppCoroutinesImpl()
 
     @Test
-    fun `insert products should select all products`() {
+    fun `insert products should select all products`() = runBlocking {
         val listProductEntity: List<ProductEntity> = mutableListOf<ProductEntity>().apply {
             add(makeProductEntity())
             add(makeProductEntity())
@@ -36,18 +38,44 @@ class ProductDaoTest {
 
         val expectedResponse: MutableList<ProductEntity> = mutableListOf()
         val response: MutableList<ProductEntity> = mutableListOf()
-        val latch = CountDownLatch(1)
-        appCoroutines.launchIO {
-            listProductEntity.forEach {
-                expectedResponse.add(it.copy(id = productDao.insert(it)?.toInt() ?: 0))
-            }
 
-            productDao.selectProducts().collect { list ->
-                list.forEach { response.add(it) }
-                latch.countDown()
-            }
+        listProductEntity.forEach {
+            expectedResponse.add(it.copy(id = productDao.insert(it)?.toInt() ?: 0))
         }
+
+        val latch = CountDownLatch(1)
+        productDao.selectProducts()
+            .flowOn(appCoroutines.dispatcherIO())
+            .onEach {
+                response.addAll(it)
+                latch.countDown()
+            }.launchIn(appCoroutines.scope())
         latch.await()
+
+        assertEquals(expectedResponse, response)
+    }
+
+    @Test
+    fun `insert products should select all products with delay`() = runBlocking {
+        val listProductEntity: List<ProductEntity> = mutableListOf<ProductEntity>().apply {
+            add(makeProductEntity())
+            add(makeProductEntity())
+            add(makeProductEntity())
+        }
+
+        val expectedResponse: MutableList<ProductEntity> = mutableListOf()
+        val response: MutableList<ProductEntity> = mutableListOf()
+        listProductEntity.forEach {
+            expectedResponse.add(it.copy(id = productDao.insert(it)?.toInt() ?: 0))
+        }
+
+        productDao.selectProducts()
+            .flowOn(appCoroutines.dispatcherIO())
+            .onEach {
+                response.addAll(it)
+            }.launchIn(appCoroutines.scope())
+
+        delay(2000L)
 
         assertEquals(expectedResponse, response)
     }

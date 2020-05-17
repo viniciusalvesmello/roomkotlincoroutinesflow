@@ -52,6 +52,6 @@ class SaveProductRepositoryTest {
         })
 
         assertEquals(true, executeOnError)
-        assertEquals(throwable, throwableOnError)
+        assertEquals(throwable.message, throwableOnError?.message)
     }
 }
