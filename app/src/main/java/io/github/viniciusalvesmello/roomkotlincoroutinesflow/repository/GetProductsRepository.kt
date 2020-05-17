@@ -5,7 +5,7 @@ import io.github.viniciusalvesmello.roomkotlincoroutinesflow.repository.model.Pr
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.room.dao.ProductDao
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.AppCoroutines
 import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.ResourceResponse
-import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.extension.asCacheResourceResponse
+import io.github.viniciusalvesmello.roomkotlincoroutinesflow.utils.extension.asResourceResponse
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
@@ -23,7 +23,7 @@ class GetProductsRepositoryImpl(
         productDao.selectProducts()
             .flowOn(appCoroutines.dispatcherIO())
             .map { list -> list.map { it.toProduct() } }
-            .asCacheResourceResponse(appCoroutines.scope())
+            .asResourceResponse(appCoroutines.scope())
 
     override fun cancel() {
         appCoroutines.cancel()

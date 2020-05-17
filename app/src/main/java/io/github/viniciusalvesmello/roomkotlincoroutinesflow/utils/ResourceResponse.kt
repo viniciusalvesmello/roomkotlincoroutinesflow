@@ -5,8 +5,7 @@ import androidx.lifecycle.LiveData
 class ResourceResponse<T>(
     val state: LiveData<StateView>,
     val data: LiveData<T>,
-    val error: LiveData<Throwable>,
-    val retry: (() -> ResourceResponse<T>)? = null
+    val error: LiveData<Throwable>
 ) {
     companion object {
         fun <T> empty(): ResourceResponse<T> {

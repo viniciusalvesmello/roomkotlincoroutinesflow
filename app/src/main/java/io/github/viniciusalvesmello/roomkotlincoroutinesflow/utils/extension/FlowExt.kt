@@ -11,23 +11,15 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 
-fun <T> Flow<T>.asCacheResourceResponse(
-    scope: CoroutineScope,
-    retry: (() -> ResourceResponse<T>)? = null,
-    transformer: (T) -> T = { it },
-    isEmptyPredicate: (T) -> Boolean = { false },
-    sendEmptyData: Boolean = true
-): ResourceResponse<T> {
+fun <T> Flow<T>.asResourceResponse(scope: CoroutineScope): ResourceResponse<T> {
     val (result, state, error) = buildResourceResponse<T>()
 
     this.buffer()
         .onStart {
             state.postValue(StateView.LOADING)
         }.onEach { data ->
-            val isEmpty = isEmptyPredicate(data)
-            if (sendEmptyData || isEmpty.not()) result.postValue(transformer(data))
-            val networkState = if (isEmpty) StateView.EMPTY else StateView.SUCCESS
-            state.postValue(networkState)
+            result.postValue(data)
+            state.postValue(StateView.SUCCESS)
         }.catch {
             state.postValue(StateView.ERROR)
             error.postValue(it)
@@ -36,7 +28,6 @@ fun <T> Flow<T>.asCacheResourceResponse(
     return ResourceResponse(
         data = result,
         state = state,
-        error = error,
-        retry = retry
+        error = error
     )
 }
